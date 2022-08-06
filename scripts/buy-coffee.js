@@ -30,7 +30,7 @@ async function main(){
     // Get example accounts
     const [owner, tipper, tipper2, tipper3] = await hre.ethers.getSigners();
     
-    // Get contract to deploy
+    // Get contract to deploy and deploy
     const BuyMeACoffee = await hre.ethers.getContractFactory("BuyMeACoffee");
     const buyMeACoffee = await BuyMeACoffee.deploy();
     await buyMeACoffee.deployed();
@@ -41,23 +41,27 @@ async function main(){
     console.log("==Start==");
     await printBalances(addresses);
 
-    // Check balances before coffee purchase
+    // Buy the owner a few coffees
     const tip = {value: hre.ethers.utils.parseEther("1")};
     await buyMeACoffee.connect(tipper).buyCoffee("Sahil", "Bought you a Coffee, Keep up with the great stuff!!!", tip);
     await buyMeACoffee.connect(tipper2).buyCoffee("Dinesh", "Keep posting great content!", tip);
     await buyMeACoffee.connect(tipper3).buyCoffee("Dhairya", "This is a great dApp!!!", tip);
 
-    // Buy the owner a few coffees
+    // Check balances after coffee purchase
     console.log("== Bought Coffee ==");
     await printBalances(addresses);
 
-    // Check balances after coffee purchase
-
     // Withdraw funds
-
+    await buyMeACoffee.connect(owner).withdrawTips();
+    
     // Check balances after withdraw
+    console.log("== WithdrawTips ==");
+    await printBalances(addresses);
 
     // Read all the memos left for the owner
+    console.log("== Memos ==");
+    const memos = await buyMeACoffee.getMemos();
+    printMemos(memos); 
 }
 
 main()
