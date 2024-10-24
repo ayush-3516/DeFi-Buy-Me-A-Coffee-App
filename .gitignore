@@ -1,5 +1,12 @@
 node_modules
-artifacts
-cache
 .env
-Front-end
+coverage
+coverage.json
+typechain
+typechain-types
+
+# Hardhat files
+cache
+artifacts
+
+.aider*
